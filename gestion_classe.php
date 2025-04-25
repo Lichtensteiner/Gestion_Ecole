@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Gestion_classe</title>
+</head>
+
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  .transition-all { transition: all 0.3s ease; }
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  .section {
+    display: none;
+  }
+  .section.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .nav-btn.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.375rem;
+  }
+  .fixed {
+    position: fixed;
+  }
+  .inset-0 {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1; 
+      transform: translateY(0);
+    }
+  }
+  .class-action-btn {
+    transition: all 0.2s ease;
+  }
+
+  .class-action-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .class-tab {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .class-content-area {
+    min-height: 400px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+</style>
+<body class="bg-gray-50">
+<!-- Navigation -->
+<nav class="bg-gradient-to-r from-blue-800 to-blue-600 text-white p-4 shadow-lg">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-graduation-cap text-2xl"></i>
+      <h1 class="text-2xl font-bold">GestionSco Gabon</h1>
+    </div>
+    <div class="flex gap-4">
+      <a href="/dashboard.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+        <i class="fas fa-chart-line"></i>
+        <span>Tableau de bord</span>
+      </a>
+      <a href="./views/gestion_eleve.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+        <i class="fas fa-user-graduate"></i>
+        <span>Élèves</span>
+      </a>
+      <a href="/views/gestion_enseignant.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Enseignants</span>
+      </a>
+      <a href="/views/gestion_classe.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+        <i class="fas fa-school"></i>
+        <span>Classes</span>
+      </a>
+      <a href="/views/gestion_note.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+        <i class="fas fa-star"></i>
+        <span>Notes</span>
+      </a>
+    </div>
+    <div class="flex items-center gap-3 bg-blue-700 p-2 rounded">
+      <i class="fas fa-user-shield"></i>
+      <span>Admin</span>
+    </div>
+  </div>
+</nav>
+  <!-- Classes Section -->
+  <div id="classes" class="section">
+    <h2 class="text-2xl font-bold mb-6">Gestion des Classes</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Main Class Info Card -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold">6&#xe8;me A</h3>
+          <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">32 &#xe9;l&#xe8;ves</span>
+        </div>
+        <div class="space-y-3">
+          <p><i class="fas fa-user-tie mr-2"></i>Prof. Principal: M. Ondo</p>
+          <p><i class="fas fa-clock mr-2"></i>8h - 17h</p>
+          <p><i class="fas fa-map-marker-alt mr-2"></i>Salle: 105</p>
+          <hr class="my-3">
+          <p class="font-semibold">Statistiques:</p>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <div>Moyenne: 12.5/20</div>
+            <div>Taux pr&#xe9;sence: 95%</div>
+          </div>
+          <button class="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 manage-class-btn">
+            G&#xe9;rer la classe
+          </button>
+        </div>
+      </div>
+
+      <!-- Class Details Sections -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Students Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="text-lg font-bold mb-4">&#xc9;l&#xe8;ves</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="p-2 text-left">Nom</th>
+                  <th class="p-2 text-left">Moyenne</th>
+                  <th class="p-2 text-left">Absences</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="p-2">Mba Jean</td>
+                  <td class="p-2">13.5/20</td>
+                  <td class="p-2">2</td>
+                </tr>
+                <!-- Additional students... -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Schedule Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="text-lg font-bold mb-4">Emploi du Temps</h4>
+          <div class="grid grid-cols-5 gap-2 text-sm">
+            <div class="bg-gray-50 p-2 rounded">
+              <div class="font-bold">Lundi</div>
+              <div>8h - Math</div>
+              <div>10h - Fran&#xe7;ais</div>
+            </div>
+            <!-- Additional days... -->
+          </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="text-lg font-bold mb-4">Ressources &amp; &#xc9;quipements</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <h5 class="font-semibold">Mat&#xe9;riel disponible:</h5>
+              <ul class="list-disc list-inside">
+                <li>Projecteur</li>
+                <li>Tableau interactif</li>
+                <li>30 tablettes</li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold">Documents:</h5>
+              <ul class="list-disc list-inside">
+                <li>Programme scolaire</li>
+                <li>Guides p&#xe9;dagogiques</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Communication Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="text-lg font-bold mb-4">Communication &amp; Activit&#xe9;s</h4>
+          <div class="space-y-4">
+            <div>
+              <h5 class="font-semibold">Prochaines r&#xe9;unions:</h5>
+              <p>R&#xe9;union parents-profs: 15/03/2024</p>
+            </div>
+            <div>
+              <h5 class="font-semibold">Activit&#xe9;s extrascolaires:</h5>
+              <p>Club de math&#xe9;matiques: Mercredi 14h-16h</p>
+              <p>Sortie p&#xe9;dagogique: 20/03/2024</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Discipline Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="text-lg font-bold mb-4">Discipline &amp; Comportement</h4>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span>Incidents ce mois:</span>
+              <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">2 mineurs</span>
+            </div>
+            <div>
+              <h5 class="font-semibold">Derniers rapports:</h5>
+              <ul class="list-disc list-inside">
+                <li>05/03: Retard en cours (Mba Jean)</li>
+                <li>02/03: Devoir non fait (Koumba Marie)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grades Section -->
+  <div id="grades" class="section">
+    <h2 class="text-2xl font-bold mb-6">Gestion des Notes</h2>
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between mb-6">
+        <div class="flex gap-4">
+          <select class="p-2 border rounded-lg">
+            <option>S&#xe9;lectionner une classe</option>
+            <option>6&#xe8;me A</option>
+            <option>6&#xe8;me B</option>
+          </select>
+          <select class="p-2 border rounded-lg">
+            <option>S&#xe9;lectionner une mati&#xe8;re</option>
+            <option>Math&#xe9;matiques</option>
+            <option>Fran&#xe7;ais</option>
+          </select>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <i class="fas fa-search mr-2"></i>Afficher
+          </button>
+        </div>
+        <button id="addGrade" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+          <i class="fas fa-plus mr-2"></i>Ajouter des notes
+        </button>
+      </div>
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="p-4 text-left">&#xc9;l&#xe8;ve</th>
+            <th class="p-4 text-left">Devoir 1</th>
+            <th class="p-4 text-left">Devoir 2</th>
+            <th class="p-4 text-left">Composition</th>
+            <th class="p-4 text-left">Moyenne</th>
+            <th class="p-4 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="p-4">Obiang Pierre</td>
+            <td class="p-4"><input type="number" min="0" max="20" class="w-20 p-1 border rounded" value="15"></td>
+            <td class="p-4"><input type="number" min="0" max="20" class="w-20 p-1 border rounded" value="13"></td>
+            <td class="p-4"><input type="number" min="0" max="20" class="w-20 p-1 border rounded" value="14"></td>
+            <td class="p-4">14.00</td>
+            <td class="p-4">
+              <button class="text-blue-600 hover:text-blue-800 mr-2" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="text-red-600 hover:text-red-800 mr-2" title="Supprimer">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="text-green-600 hover:text-green-800" title="Voir d&#xe9;tails">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Student Modal -->
+<div id="studentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto hidden">
+  <div class="relative top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center">
+      <h3 class="text-xl font-bold">Nouvel &#xc9;l&#xe8;ve</h3>
+      <button id="closeModal" class="text-gray-600 hover:text-gray-800">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="studentForm" class="mt-4 grid grid-cols-2 gap-4">
+      <div class="col-span-2 grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nom</label>
+          <input type="text" name="lastname" class="mt-1 p-2 w-full border rounded-md" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Pr&#xe9;nom</label>
+          <input type="text" name="firstname" class="mt-1 p-2 w-full border rounded-md" required>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date de Naissance</label>
+        <input type="date" name="birthdate" class="mt-1 p-2 w-full border rounded-md" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Lieu de Naissance</label>
+        <input type="text" name="birthplace" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Classe</label>
+        <select name="class" class="mt-1 p-2 w-full border rounded-md" required>
+          <option>6&#xe8;me A</option>
+          <option>6&#xe8;me B</option>
+          <option>5&#xe8;me A</option>
+          <option>5&#xe8;me B</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Sexe</label>
+        <select name="gender" class="mt-1 p-2 w-full border rounded-md">
+          <option>Masculin</option>
+          <option>F&#xe9;minin</option>
+        </select>
+      </div>
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Adresse</label>
+        <input type="text" name="address" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div class="col-span-2 grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Nom du Parent/Tuteur</label>
+          <input type="text" name="parent_name" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Contact Parent</label>
+          <input type="tel" name="parent_phone" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+      </div>
+      <div class="col-span-2 flex justify-end gap-4 mt-4">
+        <button type="button" id="cancelStudent" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+          Annuler
+        </button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Teacher Modal -->
+<div id="teacherModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto hidden">
+  <div class="relative top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center">
+      <h3 class="text-xl font-bold">Nouvel Enseignant</h3>
+      <button id="closeTeacherModal" class="text-gray-600 hover:text-gray-800">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="teacherForm" class="mt-4 grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Nom</label>
+        <input type="text" name="lastname" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pr&#xe9;nom</label>
+        <input type="text" name="firstname" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Mati&#xe8;re principale</label>
+        <select name="subject" class="mt-1 p-2 w-full border rounded-md">
+          <option>Math&#xe9;matiques</option>
+          <option>Fran&#xe7;ais</option>
+          <option>Histoire-G&#xe9;o</option>
+          <option>SVT</option>
+          <option>Physique-Chimie</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">T&#xe9;l&#xe9;phone</label>
+        <input type="tel" name="phone" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Dipl&#xf4;me</label>
+        <input type="text" name="diploma" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Adresse</label>
+        <input type="text" name="address" class="mt-1 p-2 w-full border rounded-md">
+      </div>
+      <div class="col-span-2 flex justify-end gap-4 mt-4">
+        <button type="button" id="cancelTeacher" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+          Annuler
+        </button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Class Management Modal -->
+<div id="classManageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto hidden">
+  <div class="relative top-20 mx-auto p-5 border w-11/12 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold">Gestion de la Classe: 6&#xe8;me A</h3>
+      <button id="closeClassManageModal" class="text-gray-600 hover:text-gray-800">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Class Management Tabs -->
+    <div class="border-b border-gray-200 mb-4">
+      <nav class="flex -mb-px">
+        <button class="class-tab active bg-blue-50 text-blue-600 px-4 py-2 font-medium border-b-2 border-blue-500" data-tab="general-info">
+          Informations g&#xe9;n&#xe9;rales
+        </button>
+        <button class="class-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-600" data-tab="students">
+          &#xc9;l&#xe8;ves
+        </button>
+        <button class="class-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-600" data-tab="schedule">
+          Emploi du temps
+        </button>
+        <button class="class-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-600" data-tab="grades">
+          Notes et &#xe9;valuations
+        </button>
+        <button class="class-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-600" data-tab="discipline">
+          Discipline
+        </button>
+        <button class="class-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-600" data-tab="communication">
+          Communication
+        </button>
+      </nav>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-4 mb-6">
+      <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 class-action-btn" data-action="add-student">
+        <i class="fas fa-plus mr-2"></i>Ajouter un &#xe9;l&#xe8;ve
+      </button>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 class-action-btn" data-action="schedule-class">
+        <i class="fas fa-calendar-alt mr-2"></i>Planifier un cours
+      </button>
+      <button class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 class-action-btn" data-action="send-notification">
+        <i class="fas fa-bell mr-2"></i>Envoyer une notification
+      </button>
+      <button class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 class-action-btn" data-action="generate-report">
+        <i class="fas fa-file-alt mr-2"></i>G&#xe9;n&#xe9;rer un rapport
+      </button>
+    </div>
+
+    <!-- Class Content Area -->
+    <div class="class-content-area grid grid-cols-3 gap-6">
+      <div class="grid grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h4 class="font-bold mb-3">Informations de base</h4>
+          <div class="space-y-2">
+            <p><span class="font-medium">Niveau:</span> 6ème A</p>
+            <p><span class="font-medium">Effectif:</span> 32 élèves</p>
+            <p><span class="font-medium">Professeur principal:</span> M. Ondo</p>
+            <p><span class="font-medium">Salle principale:</span> 105</p>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h4 class="font-bold mb-3">Statistiques</h4>
+          <div class="space-y-2">
+            <p><span class="font-medium">Moyenne générale:</span> 12.5/20</p>
+            <p><span class="font-medium">Taux de réussite:</span> 85%</p>
+            <p><span class="font-medium">Taux de présence:</span> 95%</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-2 bg-white p-4 rounded-lg shadow">
+        <h4 class="font-bold mb-4">Élèves</h4>
+        <div class="flex justify-between mb-4">
+          <input type="text" placeholder="Rechercher un élève..." class="p-2 border rounded">
+          <button class="bg-blue-600 text-white px-4 py-2 rounded">Ajouter un élève</button>
+        </div>
+        <table class="w-full">
+          <!-- Student table content -->
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div id="gradeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto hidden">
+  <div class="relative top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center">
+      <h3 class="text-xl font-bold">Ajouter des Notes</h3>
+      <button id="closeGradeModal" class="text-gray-600 hover:text-gray-800">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="gradeForm" class="mt-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Classe</label>
+          <select name="class" class="mt-1 p-2 w-full border rounded-md" required>
+            <option>6ème A</option>
+            <option>6ème B</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Matière</label>
+          <select name="subject" class="mt-1 p-2 w-full border rounded-md" required>
+            <option>Mathématiques</option>
+            <option>Français</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Type d'évaluation</label>
+          <select name="evaluation_type" class="mt-1 p-2 w-full border rounded-md" required>
+            <option>Devoir 1</option>
+            <option>Devoir 2</option>
+            <option>Composition</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Date</label>
+          <input type="date" name="date" class="mt-1 p-2 w-full border rounded-md" required>
+        </div>
+      </div>
+      <div class="mt-4">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="p-2 text-left">Élève</th>
+              <th class="p-2 text-left">Note (/20)</th>
+              <th class="p-2 text-left">Observations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="p-2">Obiang Pierre</td>
+              <td class="p-2"><input type="number" min="0" max="20" class="w-20 p-1 border rounded"></td>
+              <td class="p-2"><input type="text" class="w-full p-1 border rounded"></td>
+            </tr>
+            <!-- Add more student rows as needed -->
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-end gap-4 mt-4">
+        <button type="button" id="cancelGrade" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+          Annuler
+        </button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          Enregistrer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>document.addEventListener('DOMContentLoaded', function () {
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.section');
+  navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      sections.forEach(section => section.classList.remove('active'));
+      button.classList.add('active');
+      const sectionId = button.dataset.section;
+      document.getElementById(sectionId).classList.add('active');
+    });
+  });
+  const classManageButtons = document.querySelectorAll('.manage-class-btn');
+  classManageButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      document.getElementById('classManageModal').classList.remove('hidden');
+    });
+  });
+  document.getElementById('closeClassManageModal').addEventListener('click', function () {
+    document.getElementById('classManageModal').classList.add('hidden');
+  });
+  const classTabs = document.querySelectorAll('.class-tab');
+  classTabs.forEach(tab => {
+    tab.addEventListener('click', function () {
+      classTabs.forEach(t => {
+        t.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-500');
+        t.classList.add('text-gray-600');
+      });
+      this.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-500');
+      this.classList.remove('text-gray-600');
+    });
+  });
+  document.getElementById('addStudent').addEventListener('click', function () {
+    document.getElementById('studentModal').classList.remove('hidden');
+  });
+  document.getElementById('closeModal').addEventListener('click', function () {
+    document.getElementById('studentModal').classList.add('hidden');
+  });
+  document.getElementById('cancelStudent').addEventListener('click', function () {
+    document.getElementById('studentModal').classList.add('hidden');
+  });
+  document.getElementById('addTeacher').addEventListener('click', function () {
+    document.getElementById('teacherModal').classList.remove('hidden');
+  });
+  document.getElementById('closeTeacherModal').addEventListener('click', function () {
+    document.getElementById('teacherModal').classList.add('hidden');
+  });
+  document.getElementById('cancelTeacher').addEventListener('click', function () {
+    document.getElementById('teacherModal').classList.add('hidden');
+  });
+  document.getElementById('studentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const studentData = Object.fromEntries(formData);
+    const tbody = document.querySelector('#students table tbody');
+    const tr = document.createElement('tr');
+    tr.classList.add('border-t');
+    tr.innerHTML = `
+      <td class="p-4">${studentData.lastname} ${studentData.firstname}</td>
+      <td class="p-4">MAT${new Date().getFullYear()}${String(Math.floor(Math.random() * 999)).padStart(3, '0')}</td>
+      <td class="p-4">${studentData.class}</td>
+      <td class="p-4">${new Date(studentData.birthdate).toLocaleDateString()}</td>
+      <td class="p-4">${studentData.parent_name}</td>
+      <td class="p-4">${studentData.parent_phone}</td>
+      <td class="p-4">-</td>
+      <td class="p-4">
+        <button class="text-blue-600 hover:text-blue-800 mr-2" title="Modifier">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="text-red-600 hover:text-red-800 mr-2" title="Supprimer">
+          <i class="fas fa-trash"></i>
+        </button>
+        <button class="text-green-600 hover:text-green-800" title="Voir détails">
+          <i class="fas fa-eye"></i>
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+    const required = ['lastname', 'firstname', 'birthdate', 'class'];
+    for (let field of required) {
+      if (!formData.get(field)) {
+        alert(`Le champ ${field} est obligatoire`);
+        return;
+      }
+    }
+    showSuccess('Élève ajouté avec succès!');
+    document.getElementById('studentModal').classList.add('hidden');
+    this.reset();
+  });
+  function showSuccess(message) {
+    const alert = document.createElement('div');
+    alert.classList.add('fixed', 'top-4', 'right-4', 'bg-green-100', 'text-green-800', 'p-4', 'rounded');
+    alert.textContent = message;
+    document.body.appendChild(alert);
+    setTimeout(() => alert.remove(), 3000);
+  }
+  document.querySelectorAll('.fa-trash').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (confirm('Voulez-vous vraiment supprimer cet élève?')) {
+        this.closest('tr').remove();
+        showSuccess('Élève supprimé avec succès!');
+      }
+    });
+  });
+  document.querySelectorAll('.fa-eye').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const studentName = this.closest('tr').querySelector('td').textContent;
+      alert(`Détails pour l'élève: ${studentName}`);
+    });
+  });
+  document.getElementById('addGrade').addEventListener('click', function () {
+    document.getElementById('gradeModal').classList.remove('hidden');
+  });
+  document.getElementById('closeGradeModal').addEventListener('click', function () {
+    document.getElementById('gradeModal').classList.add('hidden');
+  });
+  document.getElementById('cancelGrade').addEventListener('click', function () {
+    document.getElementById('gradeModal').classList.add('hidden');
+  });
+  document.getElementById('gradeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    showSuccess('Notes enregistrées avec succès!');
+    document.getElementById('gradeModal').classList.add('hidden');
+    this.reset();
+  });
+  document.querySelectorAll('#grades .fa-trash').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (confirm('Voulez-vous vraiment supprimer ces notes?')) {
+        this.closest('tr').remove();
+        showSuccess('Notes supprimées avec succès!');
+      }
+    });
+  });
+  document.querySelectorAll('#grades .fa-eye').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const studentName = this.closest('tr').querySelector('td').textContent;
+      alert(`Détails des notes pour: ${studentName}`);
+    });
+  });
+
+  document.querySelector('#students input[type="text"]').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const studentRows = document.querySelectorAll('#students tbody tr');
+  
+    studentRows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  });
+
+  document.querySelector('#teachers input[type="text"]').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const teacherRows = document.querySelectorAll('#teachers tbody tr');
+  
+    teacherRows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+  });
+
+  const searchGrades = () => {
+    const classSelect = document.querySelector('#grades select:first-of-type').value;
+    const subjectSelect = document.querySelector('#grades select:last-of-type').value;
+    const gradeRows = document.querySelectorAll('#grades tbody tr');
+  
+    gradeRows.forEach(row => {
+      const classMatch = classSelect === 'Sélectionner une classe' || row.querySelector('td:nth-child(3)').textContent.includes(classSelect);
+      const subjectMatch = subjectSelect === 'Sélectionner une matière' || row.querySelector('td:nth-child(2)').textContent.includes(subjectSelect);
+    
+      row.style.display = (classMatch && subjectMatch) ? '' : 'none';
+    });
+  };
+
+  document.querySelectorAll('#grades select').forEach(select => {
+    select.addEventListener('change', searchGrades);
+  });
+
+  document.querySelectorAll('.class-search').forEach(input => {
+    input.addEventListener('keyup', function() {
+      const searchTerm = this.value.toLowerCase();
+      const section = this.closest('.tab-content');
+      const searchableElements = section.querySelectorAll('.searchable');
+    
+      searchableElements.forEach(element => {
+        const text = element.textContent.toLowerCase();
+        element.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
+  });
+
+  document.querySelectorAll('.search-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const searchInput = this.previousElementSibling;
+      const event = new Event('keyup');
+      searchInput.dispatchEvent(event);
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const classTabs = document.querySelectorAll('.class-tab');
+    const actionButtons = document.querySelectorAll('.class-action-btn');
+
+    classTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        classTabs.forEach(t => {
+          t.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-500');
+          t.classList.add('text-gray-600'); 
+        });
+
+        tab.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-500');
+        tab.classList.remove('text-gray-600');
+      });
+    });
+
+    document.querySelector('[data-action="add-student"]').addEventListener('click', function() {
+      document.getElementById('studentModal').classList.remove('hidden');
+    });
+
+    document.querySelector('[data-action="schedule-class"]').addEventListener('click', function() {
+      alert('Fonctionnalité de planification de cours à venir');
+    });
+
+    document.querySelector('[data-action="send-notification"]').addEventListener('click', function() {
+      alert('Fonctionnalité de notification à venir');
+    });
+
+    document.querySelector('[data-action="generate-report"]').addEventListener('click', function() {
+      alert('Fonctionnalité de rapport à venir');
+    });
+
+    const tabs = {
+      'general-info': `
+        <div class="grid grid-cols-2 gap-6">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <h4 class="font-bold mb-3">Informations de base</h4>
+            <div class="space-y-2">
+              <p><span class="font-medium">Niveau:</span> 6ème A</p>
+              <p><span class="font-medium">Effectif:</span> 32 élèves</p>
+              <p><span class="font-medium">Professeur principal:</span> M. Ondo</p>
+              <p><span class="font-medium">Salle principale:</span> 105</p>
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow">
+            <h4 class="font-bold mb-3">Statistiques</h4>
+            <div class="space-y-2">
+              <p><span class="font-medium">Moyenne générale:</span> 12.5/20</p>
+              <p><span class="font-medium">Taux de réussite:</span> 85%</p>
+              <p><span class="font-medium">Taux de présence:</span> 95%</p>
+            </div>
+          </div>
+        </div>
+      `,
+      'students': `
+        <div class="bg-white p-4 rounded-lg shadow">
+          <div class="flex justify-between mb-4">
+            <input type="text" placeholder="Rechercher un élève..." class="p-2 border rounded">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded">Ajouter un élève</button>
+          </div>
+          <table class="w-full">
+            <!-- Student table content -->
+          </table>
+        </div>
+      `,
+    };
+
+    classTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        const contentType = this.getAttribute('data-tab');
+        const contentArea = document.querySelector('.class-content-area');
+        contentArea.innerHTML = tabs[contentType] || 'Contenu à venir';
+      });
+    });
+  });
+});</script>
+
+</body></html>

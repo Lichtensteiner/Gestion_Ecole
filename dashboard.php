@@ -1,48 +1,14 @@
 <?php
-session_start();
+include './config/db.php'; // Inclure le fichier de configuration
 
-// Variables d'erreur et de succès
-$erreur = $success = "";
-
-// Connexion à la base de données
-$conn = new mysqli("localhost", "root", "", "gestion_ecole");
-
-if ($conn->connect_error) {
-    die("Erreur de connexion : " . $conn->connect_error);
-}
-
-// Traitement du formulaire de connexion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connexion'])) {
-    $email = $conn->real_escape_string($_POST['email']);
-    $mot_de_passe = $_POST['mot_de_passe'];
-
-    // Vérification de l'utilisateur dans la base de données
-    $sql = "SELECT id, nom_complet, mot_de_passe, role FROM utilisateurs WHERE email = '$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // Vérifier le mot de passe
-        if (password_verify($mot_de_passe, $user['mot_de_passe'])) {
-            // Démarrer la session et stocker les informations de l'utilisateur
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['nom_complet'] = $user['nom_complet'];
-            $_SESSION['role'] = $user['role'];
-
-            // Rediriger vers la page dashboard après connexion
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            $erreur = "Mot de passe incorrect.";
-        }
-    } else {
-        $erreur = "Aucun utilisateur trouvé avec cet email.";
-    }
-}
-
-$conn->close();
+// Comptage des statistiques
+$eleves = $pdo->query("SELECT COUNT(*) FROM eleves")->fetchColumn();
+$enseignants = $pdo->query("SELECT COUNT(*) FROM enseignants")->fetchColumn();
+$classes = $pdo->query("SELECT COUNT(*) FROM classes")->fetchColumn();
+$moyenne_generale = $pdo->query("SELECT AVG(moyenne) FROM eleves")->fetchColumn();
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -53,7 +19,7 @@ $conn->close();
   <base href="." /><script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./asset/css/dashboard.css">
-  <title>Dashboard</title>
+  <title>Document</title>
 </head>
 <body class="bg-gray-50">
 <!-- Navigation -->
@@ -64,26 +30,26 @@ $conn->close();
       <h1 class="text-2xl font-bold">GestionSco Gabon</h1>
     </div>
     <div class="flex gap-4">
-      <a href="tableau_de_bord.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+      <button class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
         <i class="fas fa-chart-line"></i>
         <span>Tableau de bord</span>
-      </a>
-      <a href="./views/gestion_eleve.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+      </button>
+      <button class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
         <i class="fas fa-user-graduate"></i>
         <span>Élèves</span>
-      </a>
-      <a href="enseignants.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+      </button>
+      <button class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
         <i class="fas fa-chalkboard-teacher"></i>
         <span>Enseignants</span>
-      </a>
-      <a href="classes.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+      </button>
+      <button class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
         <i class="fas fa-school"></i>
         <span>Classes</span>
-      </a>
-      <a href="notes.php" class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
+      </button>
+      <button class="hover:bg-blue-700 p-2 rounded transition-all flex items-center gap-2">
         <i class="fas fa-star"></i>
         <span>Notes</span>
-      </a>
+      </button>
     </div>
     <div class="flex items-center gap-3 bg-blue-700 p-2 rounded">
       <i class="fas fa-user-shield"></i>
@@ -91,7 +57,6 @@ $conn->close();
     </div>
   </div>
 </nav>
-
 
 <!-- Dashboard -->
 <main class="container mx-auto mt-8">
